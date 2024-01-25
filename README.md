@@ -8,16 +8,12 @@ In this Lab, we setup Azure Sentinel (SIEM) and connect it to a live virtual mac
 
 - <b>PowerShell Script for the Lab</b>   (https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1)
 - <b>Azure Trial</b>    (https://azure.microsoft.com/en-us/free/)
-- <b>Sentinel Map Query</b> : FAILED_RDP_WITH_GEO_CL | summarize event_count=count() by sourcehost_CF, latitude_CF, longitude_CF, country_CF, label_CF, destinationhost_CF
-| where destinationhost_CF != "samplehost"
-| where sourcehost_CF != ""
-
 
 <h2>Program walk-through:</h2>
 
 This is the high level overview of what we are going to setup in this Lab:
 
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/Overview.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 <p align="center">
@@ -37,9 +33,9 @@ STEP 1: Create an Azure Subscription, Set up a honeypot Virtual Machine (VM):
 Use the link above to create a subscription, then in portal.azure.com, create a Virtual Machine (VM), make it very vulnerable by disabling all firewall. 
 This will characterize the vm as a honeypot (resource intentionally set to be very less secure, serve as a bait in order to trap attackers and detect them)
  
-1.1 Azure Virtual Machine created: <br/>
+1.1 Azure Virtual Machine creation: <br/>
 
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/vm_security%20group%20creation.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
@@ -47,7 +43,7 @@ This will characterize the vm as a honeypot (resource intentionally set to be ve
 
 Copy the public IP address of the VM, open start menu from our local computer and rdp into the VM using credentials set up during VM creation in azure portal.
 
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/vm_rdp1.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
@@ -55,17 +51,17 @@ Copy the public IP address of the VM, open start menu from our local computer an
 Disabling Firewall on Azure VM to make it to accept ping, thus vulnerable.
 
 1.3.1 Firewall disable: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/vm_firewall%20disable.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
 1.3.2 Ping connectivity passing from local computer to the virtual machine
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/vm_pinging%20success.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
 1.3.3 Windows Logs Security to visualize IPs remote connection to the virtual machine: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/vm_rdp%20log%20securityEventViwer.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
@@ -77,11 +73,11 @@ This Script is a continous while loop that basically look at events viewer, for 
 and create a customs logs that will be used to train the logs analytics workspaces.
 
 1.4.1 API Website sign in
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/APIGeoLocationSignin.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 1.4.2 API Key replaced in the PowerShell Script on the VM
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/APIKeyReplacedScriptRun.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
@@ -91,78 +87,69 @@ customs logs with geographical data will be created to maps where the attacks or
 
 2.1 Log Analytics Workspace created: <br/>
 
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/LogAnalytic1.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 2.2  Enable ability for Security Center to gather logs from the virtual machine into the Log Analytics Workspace : <br/>
 
-Go to Security center and ........... then go back to work analytics workspace and connect it to the virtual machine
+From Azure portal, go to Microsoft Defender for cloud, Environment settings, Settings, defender plans; Then go back to work analytics workspace and connect it to the virtual machine
 
 2.2.1 enabling Security Center ability to collect logs from Logs Analytics Workspace  into the virtual machine
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/EnableSecurityCenter1.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
-
-2.2.1 Logs Analytics Workspace connected to the virtual machine
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+2.2.2 Enabling all events Logs collection from Analytics Workspace  into the virtual machine
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/SecurityCenterEnableWorkAnalyticLogs2.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
 2.3 Custom Logs creation in Work Analytics Workspaces: <br/>
-Go to Work analytics workspace and click on our workspace (law-honeypot1), choose customs logs and add a customs logs.Then upload the file with customs logs.
-
-2.3.1 Custom Logs created in Work Analytics Workspaces ( raw data can be observed): <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
-2.3.2 customs fileds like Latitude, longitude, desination, username, source host,, States, country, label, timestamp extraction from Raw data: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
-2.3.2.1 Example of custom field Latitude extracted from Raw data: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
-2.3.2.2 Example of custom field Latitude extracted from Raw data: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
-2.3.2.3 Example of custom field source host extracted from Raw data: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
-2.3.2.4 All custom fields extracted from Raw data: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
+Go to Work analytics workspace and click on our workspace (law-honeypot1), Tables > Create> New Custom Log (MMA-Based). Then upload the file with customs logs.
 Open RDP on our local computer, and intentionally fail a login to the virtual machine, wait for about 10 minutes and run the work analyltic workspace and observed all customs fields created parsed with data.
-2.3.2.4 Custom fields tested: <br/>
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+2.3.1 Custom Logs created in Work Analytics Workspaces ( raw data can be observed): <br/>
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/RawDataIngested.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
-
 STEP 3: Set up Sentinel (Microsoft cloud Native SIEM) and use it to create a MAP to see Attackers geographical location. This will be use to visualize the attacks from all over the world
 
-Go to Azure zentinel and click on create.
+Go to Azure Sentinel and click on create.
 
 3.1 Azure Sentinel creation: <br/>
 
 <img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/VmwareInstalled.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
-3.2 Azure Sentinel created: <br/>
+3.2 Azure Sentinel Workbook creation: <br/>
 
 <img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
 
-3.3 Azure Sentinel new Workbook created and saved to visualize on a MAP: <br/>
-
-<img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
-<br />
-<br />
 3.4 Geo visualization on a MAP of attackers (Failed login) from all over the world : <br/>
 
+3.4.1 Azure Sentinel Workbook query results: <br/>
+ Run the query below in 
+- <b>Sentinel Map Query</b> : FAILED_RDP_WITH_GEO_CL 
+| extend username = extract(@"username:([^,]+)", 1, RawData),
+         timestamp = extract(@"timestamp:([^,]+)", 1, RawData),
+         latitude = extract(@"latitude:([^,]+)", 1, RawData),
+         longitude = extract(@"longitude:([^,]+)", 1, RawData),
+         sourcehost = extract(@"sourcehost:([^,]+)", 1, RawData),
+         state = extract(@"state:([^,]+)", 1, RawData),
+         label = extract(@"label:([^,]+)", 1, RawData),
+         destination = extract(@"destinationhost:([^,]+)", 1, RawData),
+         country = extract(@"country:([^,]+)", 1, RawData)
+| where destination != "samplehost"
+| where sourcehost != ""
+| summarize event_count=count() by latitude, longitude, sourcehost, label, destination, country
+
+ Customs fields longitude. latitude, sourcehost, label, destination, contry, and event_count can be observed
+ 
+<img src="https://github.com/jpap19/AzureSentinelHomeLab/blob/main/ImageSentinelProj/WorkBookQuery2.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
+<br />
+
+<br />
+3.4.1 Live Attacks can be visualized on World Map: <br/>
 <img src="https://github.com/jpap19/NessusHomeLab/blob/main/Images/WindowsInstalledOnVM.png" height="100%" width="100%" alt="Azure Sentinel SIEM Home Lab"/>
 <br />
 <br />
